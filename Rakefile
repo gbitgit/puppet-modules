@@ -11,26 +11,31 @@ task :spec do
     module_dir  = File.dirname(module_path)
     module_name = File.basename(module_dir)
 
-    print module_name.ljust(30)
+    # Due to a bug with rspec-puppet at the moment, we need to break each
+    # test out individually into each spec file.
+    Dir["#{module_dir}/spec/*/*_spec.rb"].each do |spec_file|
+      spec_name = spec_file.gsub("#{module_dir}/", "")
 
-    process = ChildProcess.build("rake", "spec")
-    process.cwd = module_dir
-    process.io.stdout = Tempfile.new("child-output")
-    process.io.stderr = Tempfile.new("child-err")
-    process.start
-    process.wait
+      print "#{module_name.ljust(15)}#{spec_name.ljust(60)}"
+      process = ChildProcess.build("rspec", spec_file)
+      process.cwd = module_dir
+      process.io.stdout = Tempfile.new("child-output")
+      process.io.stderr = Tempfile.new("child-err")
+      process.start
+      process.wait
 
-    if process.crashed?
-      puts "FAIL"
-      puts "-" * 40
+      if process.crashed?
+        puts "FAIL"
+        puts "-" * 40
 
-      # We just print stdout because rspec outputs errors on stdout
-      process.io.stdout.rewind
-      puts process.io.stdout.read
+        # We just print stdout because rspec outputs errors on stdout
+        process.io.stdout.rewind
+        puts process.io.stdout.read
 
-      puts "-" * 40
-    else
-      puts "PASS"
+        puts "-" * 40
+      else
+        puts "PASS"
+      end
     end
   end
 end
