@@ -13,6 +13,9 @@ task :spec do
     module_dir  = File.dirname(module_path)
     module_name = File.basename(module_dir)
 
+    # If we're targetting a specific module, only run those tests
+    next if ENV["MODULE"] && module_name != ENV["MODULE"]
+
     # Due to a bug with rspec-puppet at the moment, we need to break each
     # test out individually into each spec file.
     Dir["#{module_dir}/spec/*/*_spec.rb"].each do |spec_file|
