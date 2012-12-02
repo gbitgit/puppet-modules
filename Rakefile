@@ -6,6 +6,8 @@ task :default => :spec
 
 desc "Run the specs for every module."
 task :spec do
+  has_failure = false
+
   root_dir = File.dirname(__FILE__)
   Dir["#{root_dir}/modules/**/Rakefile"].each do |module_path|
     module_dir  = File.dirname(module_path)
@@ -25,6 +27,9 @@ task :spec do
       process.wait
 
       if process.crashed?
+        # Mark that we have a failure so we can have the right exit status
+        has_failure = true
+
         puts "FAIL"
         puts "-" * 40
 
@@ -38,4 +43,7 @@ task :spec do
       end
     end
   end
+
+  exit 1 if has_failure
+  exit 0
 end
