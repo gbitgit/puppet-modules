@@ -1,5 +1,7 @@
 # HashiCorp Puppet Modules
 
+[![Build Status](https://secure.travis-ci.org/hashicorp/puppet-modules.png?branch=master)](https://travis-ci.org/hashicorp/puppet-modules)
+
 These are the Puppet modules we use for various things at HashiCorp, such as
 provisioning CI machines (masters and slaves), installer build machines for
 Vagrant, and more.
