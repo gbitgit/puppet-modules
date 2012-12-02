@@ -15,11 +15,14 @@ module Puppet::Parser::Functions
     # Go through each argument in order, then each key and value, and
     # slowly build up the resulting hash.
     args.each do |environment|
-      environment.each do |key, value|
-        if !result.has_key?(key)
-          result[key] = value
-        else
-          result[key] += " #{value}"
+      # Ignore nil arguments.
+      if environment
+        environment.each do |key, value|
+          if !result.has_key?(key)
+            result[key] = value
+          else
+            result[key] += " #{value}"
+          end
         end
       end
     end
