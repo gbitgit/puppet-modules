@@ -38,6 +38,12 @@ If you don't use librarian-puppet, then just download this repository
 and copy out what you need. This is looked down upon, but you do what you
 need to do.
 
+## Documentation
+
+Each module has a `README.md` file that is easily readable in a text editor
+or on GitHub. Additinally, the Puppet files themselves are extremely well
+commented, so please read those.
+
 ## Contributing
 
 If you use a module and you find a bug or tunable you'd like to contribute
