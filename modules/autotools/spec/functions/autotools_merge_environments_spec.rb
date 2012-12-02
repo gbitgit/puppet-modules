@@ -9,7 +9,7 @@ describe "autotools_merge_environments" do
     should run.with_params(a, b).and_return(c)
   end
 
-  it do
+  it "should work with nil arguments" do
     a = { "a" => "foo" }
     b = nil
 
