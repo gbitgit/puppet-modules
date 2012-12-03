@@ -4,6 +4,7 @@
 #
 class openssl::install::linux {
   $autotools_environment = $openssl::autotools_environment
+  $make_notify           = $openssl::make_notify
   $prefix                = $openssl::prefix
   $source_dir_path       = $openssl::source_dir_path
 
@@ -14,6 +15,8 @@ class openssl::install::linux {
     cwd                => $source_dir_path,
     environment        => $autotools_environment,
     install_sentinel   => "${prefix}/lib/libssl.so",
+    make_notify        => $make_notify,
+    make_sentinel      => "${source_dir_path}/libssl.a",
     require            => Exec["untar-openssl"],
   }
 }
