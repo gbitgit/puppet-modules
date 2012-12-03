@@ -50,10 +50,10 @@ class vagrant(
   }
 
   exec { "vagrant-gem-build":
-    command     => "gem build vagrant.gemspec",
-    cwd         => $source_dir_path,
-    refreshonly => true,
-    subscribe   => Exec["untar-vagrant"],
+    command => "gem build vagrant.gemspec",
+    creates => $vagrant_gem_path,
+    cwd     => $source_dir_path,
+    require => Exec["untar-vagrant"],
   }
 
   file { $gem_renamer:
