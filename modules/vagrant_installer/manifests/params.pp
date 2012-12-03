@@ -5,14 +5,13 @@
 class vagrant_installer::params {
   $file_cache_dir       = hiera("file_cache_dir")
 
-  $base_dir = $param_base_dir ? {
-    undef   => $file_cache_dir,
-    default => $param_base_dir
+  $dist_dir = $param_dist_dir ? {
+    undef   => "${file_cache_dir}/dist",
+    default => $param_dist_dir
   }
 
   $staging_dir      = hiera("installer_staging_dir")
   $embedded_dir     = "${staging_dir}/embedded"
-  $dist_dir         = "${base_dir}/dist"
   $vagrant_revision = $param_vagrant_revision
   $vagrant_version  = $param_vagrant_version
 
