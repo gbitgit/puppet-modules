@@ -4,6 +4,7 @@
 #
 class vagrant_installer::package {
   case $operatingsystem {
+    'Archlinux': { include vagrant_installer::package::arch }
     'CentOS': { include vagrant_installer::package::centos }
     'Darwin': { include vagrant_installer::package::darwin }
     'Ubuntu': { include vagrant_installer::package::ubuntu }
