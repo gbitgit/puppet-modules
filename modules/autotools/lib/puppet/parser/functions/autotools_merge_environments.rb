@@ -16,7 +16,7 @@ module Puppet::Parser::Functions
     # slowly build up the resulting hash.
     args.each do |environment|
       # Ignore nil arguments.
-      if environment
+      if environment.is_a?(Hash)
         environment.each do |key, value|
           if !result.has_key?(key)
             result[key] = value

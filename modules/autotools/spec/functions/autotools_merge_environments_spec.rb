@@ -15,4 +15,11 @@ describe "autotools_merge_environments" do
 
     should run.with_params(a, b).and_return(a)
   end
+
+  it "should work with empty arguments" do
+    a = { "a" => "foo" }
+    b = ""
+
+    should run.with_params(a, b).and_return(a)
+  end
 end
