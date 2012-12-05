@@ -38,7 +38,7 @@ class vagrant_installer::package::arch {
   # Tar up the staging directory
   exec { "tar-staging-dir":
     command => "tar cvzf '${source_package}' ${staging_dir}",
-    creates => $source_package,
+    creates => "${setup_dir}/${source_package}",
     cwd     => $setup_dir,
     require => File[$setup_dir],
   }
