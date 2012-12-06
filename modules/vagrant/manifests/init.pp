@@ -3,17 +3,33 @@
 # This downloads Vagrant source, compiles it, and then installs it.
 #
 class vagrant(
-  $autotools_environment,
+  $autotools_environment = {},
   $embedded_dir,
   $file_cache_dir = params_lookup('file_cache_dir', 'global'),
   $revision,
 ) {
-  $source_url = "https://github.com/mitchellh/vagrant/archive/${revision}.tar.gz"
-  $source_file_path = "${file_cache_dir}/vagrant-${revision}.tar.gz"
-  $source_dir_path = "${file_cache_dir}/vagrant-${revision}"
-  $vagrant_gem_path = "${source_dir_path}/vagrant.gem"
+  $extension = $operatingsystem ? {
+    'windows' => 'zip',
+    default   => 'tar.gz',
+  }
 
-  $gem_renamer = "${file_cache_dir}/vagrant_gem_rename.rb"
+  $gem_renamer = path("${file_cache_dir}/vagrant_gem_rename.rb")
+  $source_url = "https://github.com/mitchellh/vagrant/archive/${revision}.${extension}"
+  $source_file_path = path("${file_cache_dir}/vagrant-${revision}.${extension}")
+  $source_dir_path  = path("${file_cache_dir}/vagrant-${revision}")
+  $vagrant_gem_path = path("${source_dir_path}/vagrant.gem")
+
+  if $operatingsystem == 'windows' {
+    $extract_command   = "cmd.exe /C exit /B 0"
+    $gem_command       = "${embedded_dir}\\bin\\gem.bat"
+    $gem_build_command = "cmd.exe /C ${gem_command} build vagrant.gemspec"
+    $ruby_command      = "cmd.exe /C ${embedded_dir}\\bin\\ruby.exe"
+  } else {
+    $extract_command   = "tar xvzf ${source_file_path}"
+    $gem_command       = "${embedded_dir}/bin/gem"
+    $gem_build_command = "${gem_command} build vagrant.gemspec"
+    $ruby_command      = "${embedded_dir}/bin/ruby"
+  }
 
   $extra_environment = {
     "GEM_HOME" => "${embedded_dir}/gems",
@@ -31,29 +47,39 @@ class vagrant(
   exec { "reset-vagrant":
     command     => "rm -rf ${source_dir_path}",
     refreshonly => true,
-    before      => Exec["untar-vagrant"],
+    before      => Exec["extract-vagrant"],
   }
 
   #------------------------------------------------------------------
   # Download and Compile Vagrant
   #------------------------------------------------------------------
-  wget::fetch { "vagrant":
+  download { "vagrant":
     source      => $source_url,
     destination => $source_file_path,
   }
 
-  exec { "untar-vagrant":
-    command => "tar xvzf ${source_file_path}",
+  if $operatingsystem == 'windows' {
+    # Unzip things on Windows
+    powershell { "extract-vagrant":
+      content => template("vagrant/windows_extract.erb"),
+      creates => $source_dir_path,
+      require => Download["vagrant"],
+      before  => Exec["extract-vagrant"],
+    }
+  }
+
+  exec { "extract-vagrant":
+    command => $extract_command,
     creates => $source_dir_path,
     cwd     => $file_cache_dir,
-    require => Wget::Fetch["vagrant"],
+    require => Download["vagrant"],
   }
 
   exec { "vagrant-gem-build":
-    command => "gem build vagrant.gemspec",
+    command => $gem_build_command,
     creates => $vagrant_gem_path,
     cwd     => $source_dir_path,
-    require => Exec["untar-vagrant"],
+    require => Exec["extract-vagrant"],
   }
 
   file { $gem_renamer:
@@ -62,7 +88,7 @@ class vagrant(
   }
 
   exec { "vagrant-gem-rename":
-    command => "ruby ${gem_renamer} ${source_dir_path}",
+    command => "${ruby_command} ${gem_renamer} ${source_dir_path}",
     creates => $vagrant_gem_path,
     require => [
       Exec["vagrant-gem-build"],
@@ -74,7 +100,7 @@ class vagrant(
   # Install the gem into the proper location
   #------------------------------------------------------------------
   exec { "vagrant-gem-install":
-    command     => "${embedded_dir}/bin/gem install ${vagrant_gem_path} --no-ri --no-rdoc",
+    command     => "${gem_command} install ${vagrant_gem_path} --no-ri --no-rdoc",
     creates     => "${embedded_dir}/gems/bin/vagrant",
     environment => autotools_flatten_environment($merged_environment),
     logoutput   => true,

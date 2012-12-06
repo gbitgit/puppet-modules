@@ -6,7 +6,12 @@ require 'fileutils'
 
 source_dir = ARGV[0]
 
-results = Dir.glob(File.join(source_dir, "vagrant-*.gem"))
+# Build the glob path. Replace backslashes with forward slashes, because
+# Ruby handles this properly even on Windows
+glob_path = File.join(source_dir, "vagrant-*.gem")
+glob_path.gsub!("\\", "/")
+
+results = Dir.glob(glob_path)
 if results.length != 1
   puts "Results are invalid: #{results.inspect}"
   exit 1
