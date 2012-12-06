@@ -49,6 +49,7 @@ class ruby::windows(
 
   file { "${install_dir}/config.yml":
     content => template("ruby/windows/config.yml.erb"),
+    require => Exec["extract-devkit"],
   }
 
   exec { "install-devkit":
