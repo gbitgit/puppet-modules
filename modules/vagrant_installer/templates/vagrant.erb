@@ -14,12 +14,10 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 # Useful variables
 EMBEDDED_DIR="${DIR}/../embedded"
 
-<% if @operatingsystem != "windows" -%>
 # Export gem paths so that we use the isolated gems.
-export GEM_PATH=${EMBEDDED_DIR}/gems
-export GEM_HOME=${GEM_PATH}
+export GEM_PATH="${EMBEDDED_DIR}/gems"
+export GEM_HOME="${GEM_PATH}"
 
-<% end -%>
 # Setup CFLAGS/LDFLAGS so that any gem installs (for plugins) will
 # be able to link against our tools. First, append a space to any
 # previously set CFLAGS/LDFLAGS.
@@ -41,7 +39,7 @@ unset RUBYOPT
 
 # The path to the Vagrant executable
 <% if @operatingsystem == "windows" -%>
-VAGRANT_EXECUTABLE=${EMBEDDED_DIR}/bin/vagrant
+VAGRANT_EXECUTABLE="${EMBEDDED_DIR}/gems/bin/vagrant"
 
 # If we're in Cygwin, we want to convert the path to a Windows path, rather
 # than a Cygwin path, which Ruby does not work with. We use `uname -o` to

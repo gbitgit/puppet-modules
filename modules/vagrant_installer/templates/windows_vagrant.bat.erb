@@ -1,0 +1,13 @@
+@ECHO OFF
+REM Some variables
+SET "EMBEDDED_DIR=%~dp0\..\embedded"
+
+REM Set environmental variables
+SET "GEM_HOME=%EMBEDDED_DIR%\gems"
+SET "GEM_PATH=%GEM_HOME%"
+
+REM Remove RUBYOPT, which causes serious problems.
+SET RUBYOPT=
+
+REM Run Vagrant...
+"%EMBEDDED_DIR%\..\embedded\bin\ruby.exe" "%EMBEDDED_DIR%/../embedded/gems/bin/%~n0" %*
