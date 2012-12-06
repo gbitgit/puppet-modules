@@ -19,14 +19,12 @@ class vagrant_installer::prepare {
         # 'rmdir' is SO incredibly faster than the Puppet file resource
         # on Windows, so we shell out to that.
         exec { "clear-dist-dir":
-          command => "cmd.exe /C rmdir.exe /S /Q ${dist_dir}",
-          returns => [0, 1, 2, 3, 4, 5],
+          command => "cmd.exe /C rmdir.exe /S /Q ${dist_dir} & exit /B 0",
           tag     => "prepare-clear",
         }
 
         exec { "clear-staging-dir":
-          command => "cmd.exe /C rmdir.exe /S /Q ${staging_dir}",
-          returns => [0, 1, 2, 3, 4, 5],
+          command => "cmd.exe /C rmdir.exe /S /Q ${staging_dir} & exit /B 0",
           tag     => "prepare-clear",
         }
       }
