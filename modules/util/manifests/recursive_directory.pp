@@ -15,9 +15,17 @@
 # in the process.
 #
 define util::recursive_directory($dir=$name) {
-  exec { $name:
-    command => "mkdir -p ${dir}",
-    path    => ["/bin", "/usr/bin"],
-    unless  => "test -d ${dir}",
+  if $operatingsystem == 'windows' {
+    $win_dir = regsubst($dir, '/', '\\', 'G')
+
+    exec { $name:
+      command => "cmd.exe /C IF NOT EXIST ${win_dir} MKDIR ${win_dir}",
+    }
+  } else {
+    exec { $name:
+      command => "mkdir -p ${dir}",
+      path    => ["/bin", "/usr/bin"],
+      unless  => "test -d ${dir}",
+    }
   }
 }

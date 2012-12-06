@@ -8,6 +8,7 @@ class vagrant_installer::package {
     'CentOS': { include vagrant_installer::package::centos }
     'Darwin': { include vagrant_installer::package::darwin }
     'Ubuntu': { include vagrant_installer::package::ubuntu }
+    'windows': { include vagrant_installer::package::windows }
     default:  { fail("Unknown operating system to package for.") }
   }
 }
