@@ -14,15 +14,36 @@ class vagrant_installer::prepare {
   # Sometimes when we're debugging, its nice to keep these directories
   # around to keep the Puppet runs fast. This will make that happen.
   if !$param_keep_dirs {
-    file { [$dist_dir, $staging_dir]:
-      ensure  => absent,
-      force   => true,
-      recurse => true,
-      tag     => "prepare-clear",
+    case $operatingsystem {
+      'windows': {
+        # 'rmdir' is SO incredibly faster than the Puppet file resource
+        # on Windows, so we shell out to that.
+        exec { "clear-dist-dir":
+          command => "cmd.exe /C rmdir.exe /S /Q ${dist_dir}",
+          returns => [0, 1, 2, 3, 4, 5],
+          tag     => "prepare-clear",
+        }
+
+        exec { "clear-staging-dir":
+          command => "cmd.exe /C rmdir.exe /S /Q ${staging_dir}",
+          returns => [0, 1, 2, 3, 4, 5],
+          tag     => "prepare-clear",
+        }
+      }
+
+      default: {
+        file { [$dist_dir, $staging_dir]:
+          ensure  => absent,
+          force   => true,
+          recurse => true,
+          tag     => "prepare-clear",
+        }
+      }
     }
 
     # Run these prior to any of the directories, so that we
     # delete them prior to making them.
+    Exec <| tag == "prepare-clear" |> -> Util::Recursive_directory <| tag == "prepare" |>
     File <| tag == "prepare-clear" |> -> Util::Recursive_directory <| tag == "prepare" |>
   }
 
