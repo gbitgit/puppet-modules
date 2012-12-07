@@ -88,7 +88,7 @@ class vagrant_installer::staging::posix {
     make_notify           => Exec["reset-ruby"],
   }
 
-  class { "ruby":
+  class { "ruby::source":
     autotools_environment => autotools_merge_environments(
       $default_autotools_environment, $ruby_autotools_environment),
     prefix                => $embedded_dir,
@@ -106,7 +106,7 @@ class vagrant_installer::staging::posix {
     autotools_environment => $default_autotools_environment,
     embedded_dir          => $embedded_dir,
     revision              => $vagrant_revision,
-    require               => Class["ruby"],
+    require               => Class["ruby::source"],
   }
 
   #------------------------------------------------------------------

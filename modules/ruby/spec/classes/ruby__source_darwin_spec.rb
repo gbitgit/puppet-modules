@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe "ruby" do
+describe "ruby::source" do
   context "on Darwin" do
     let(:facts) do
       { :operatingsystem => 'Darwin' }
