@@ -104,6 +104,8 @@ class vagrant(
     creates     => "${embedded_dir}/gems/bin/vagrant",
     environment => autotools_flatten_environment($merged_environment),
     logoutput   => true,
+    tries       => 3,
+    try_sleep   => 10,
     require     => Exec["vagrant-gem-rename"],
   }
 }
