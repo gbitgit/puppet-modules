@@ -16,10 +16,17 @@ class vagrant_installer::package::centos {
 
   util::recursive_directory { $centos_prefix: }
 
+  package { "rpm-build":
+    ensure => installed,
+  }
+
   exec { "fpm-vagrant-rpm":
     command => "fpm ${fpm_args} .",
     cwd     => $staging_dir,
     creates => $final_output_path,
-    require => Util::Recursive_directory[$centos_prefix],
+    require => [
+      Package["rpm-build"],
+      Util::Recursive_directory[$centos_prefix],
+    ],
   }
 }
