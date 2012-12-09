@@ -3,10 +3,18 @@
 # This will install the base development tools for multiple platforms.
 #
 class build_essential {
-  if $operatingsystem == 'Ubuntu' {
-    package {
-      ["build-essential", "autoconf", "automake", "libtool"]:
+  case $operatingsystem {
+    'CentOS': {
+      package { ["gcc", "make"]:
         ensure => installed,
+      }
+    }
+
+    'Ubuntu': {
+      package {
+        ["build-essential", "autoconf", "automake", "libtool"]:
+          ensure => installed,
+      }
     }
   }
 }

@@ -3,7 +3,12 @@
 # This installs git.
 #
 class git {
-  package { "git-core":
+  $package = $operatingsystem ? {
+    'CentOS' => "git",
+    default  => "git-core",
+  }
+
+  package { $package:
     ensure => installed,
   }
 }
