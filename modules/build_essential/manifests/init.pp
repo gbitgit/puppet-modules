@@ -4,6 +4,12 @@
 #
 class build_essential {
   case $operatingsystem {
+    'Archlinux': {
+      package { "base-devel":
+        ensure => installed,
+      }
+    }
+
     'CentOS': {
       package { ["gcc", "make"]:
         ensure => installed,

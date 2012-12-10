@@ -15,6 +15,7 @@ class vagrant::installer_builder(
   $revision,
 ) {
   require git
+  require rsync
 
   if !$file_cache_dir {
     fail("You must set a file_cache_dir.")
@@ -43,6 +44,10 @@ class vagrant::installer_builder(
     notify  => Exec["rsync-vagrant-installer-builder"],
   }
 
+  package { "librarian-puppet":
+    provider => gem,
+  }
+
   exec { "vagrant-installer-modules":
     command     => "librarian-puppet install",
     creates     => "${source_dir_path}/modules",
@@ -58,9 +63,5 @@ class vagrant::installer_builder(
     command     => "rsync --archive --delete ${source_dir_path}/ ${install_dir}/",
     refreshonly => true,
     require     => Exec["vagrant-installer-modules"],
-  }
-
-  package { "librarian-puppet":
-    provider => gem,
   }
 }

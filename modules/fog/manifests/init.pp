@@ -7,8 +7,9 @@ class fog {
   require ruby
 
   $pre_packages = $operatingsystem ? {
-    'CentOS' => ["libxml2", "libxml2-devel", "libxslt", "libxslt-devel"],
-    default  => ["libxml2-dev", "libxslt1-dev"],
+    'Archlinux' => ["libxml2", "libxslt"],
+    'CentOS'    => ["libxml2", "libxml2-devel", "libxslt", "libxslt-devel"],
+    default     => ["libxml2-dev", "libxslt1-dev"],
   }
 
   package { $pre_packages:
