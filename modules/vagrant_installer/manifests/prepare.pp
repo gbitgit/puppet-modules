@@ -30,10 +30,15 @@ class vagrant_installer::prepare {
       }
 
       default: {
-        file { [$dist_dir, $staging_dir]:
-          ensure  => absent,
-          force   => true,
-          recurse => true,
+        # 'rm' is again much faster than the Puppet file resource, so we
+        # just execute that directly.
+        exec { "clear-dist-dir":
+          command => "rm -rf ${dist_dir}",
+          tag     => "prepare-clear",
+        }
+
+        exec { "clear-staging-dir":
+          command => "rm -rf ${staging_dir}",
           tag     => "prepare-clear",
         }
       }
@@ -42,7 +47,6 @@ class vagrant_installer::prepare {
     # Run these prior to any of the directories, so that we
     # delete them prior to making them.
     Exec <| tag == "prepare-clear" |> -> Util::Recursive_directory <| tag == "prepare" |>
-    File <| tag == "prepare-clear" |> -> Util::Recursive_directory <| tag == "prepare" |>
   }
 
   util::recursive_directory { [
