@@ -1,6 +1,12 @@
 require "spec_helper"
 
 describe "vagrant::installer_builder" do
+  let(:facts) do
+    {
+      :kernel => 'Linux'
+    }
+  end
+
   let(:good_params) do
     {
       :file_cache_dir => "/tmp",
