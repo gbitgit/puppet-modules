@@ -3,7 +3,10 @@ require "spec_helper"
 describe "libyaml" do
   context "on Darwin" do
     let(:facts) do
-      { :operatingsystem => 'Darwin' }
+      {
+        :operatingsystem => 'Darwin',
+        :test => true
+      }
     end
 
     it "should call autotools with proper environment" do

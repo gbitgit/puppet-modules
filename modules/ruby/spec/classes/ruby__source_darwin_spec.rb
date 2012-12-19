@@ -3,7 +3,10 @@ require "spec_helper"
 describe "ruby::source" do
   context "on Darwin" do
     let(:facts) do
-      { :operatingsystem => 'Darwin' }
+      {
+        :operatingsystem => 'Darwin',
+        :test => true
+      }
     end
 
     it do
