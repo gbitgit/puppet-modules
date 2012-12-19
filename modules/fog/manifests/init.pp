@@ -9,7 +9,9 @@ class fog {
   $pre_packages = $operatingsystem ? {
     'Archlinux' => ["libxml2", "libxslt"],
     'CentOS'    => ["libxml2", "libxml2-devel", "libxslt", "libxslt-devel"],
-    default     => ["libxml2-dev", "libxslt1-dev"],
+    'Darwin'    => [],
+    'Ubuntu'    => ["libxml2-dev", "libxslt1-dev"],
+    default     => fail("Unknown operating system."),
   }
 
   package { $pre_packages:
