@@ -3,12 +3,24 @@
 # This installs git.
 #
 class git {
-  $package = $operatingsystem ? {
-    'CentOS' => "git",
-    default  => "git-core",
-  }
+  case $kernel {
+    'Darwin': {
+      homebrew::package { "git":
+        creates => "/usr/bin/git",
+      }
+    }
 
-  package { $package:
-    ensure => installed,
+    'Linux': {
+      $package = $operatingsystem ? {
+        'CentOS' => "git",
+        default  => "git-core",
+      }
+
+      package { $package:
+        ensure => installed,
+      }
+    }
+
+    default: { fail("Unknown kernel.") }
   }
 }
