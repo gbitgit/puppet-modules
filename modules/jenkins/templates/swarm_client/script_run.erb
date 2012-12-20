@@ -18,7 +18,7 @@ USER="<%= @user %>"
   -name ${HOSTNAME} \
   -fsroot ${FSROOT} \
 <% if @labels -%>
-  -labels '"<%= @labels %>"' \
+  -labels '<%= @labels %>' \
 <% end -%>
 <% if @master_user -%>
   -username <%= @master_user %> \

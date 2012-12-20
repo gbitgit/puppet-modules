@@ -188,14 +188,25 @@ class jenkins::swarm_client(
     }
 
     'Darwin': {
+      $launchd_path = "/Library/LaunchDaemons/org.jenkins.jenkins-swarm.plist"
+
       launchd { "org.jenkins.jenkins-swarm":
         content => template('jenkins/swarm_client/launchd.erb'),
+        notify  => Exec["restart-launchd-service"],
       }
 
-      exec { "enable-launchd-sevice":
-        command => "launchctl load /Library/LaunchDaemons/org.jenkins.jenkins-swarm.plist",
+      exec { "enable-launchd-service":
+        command => "launchctl load ${launchd_path}",
         unless  => "launchctl list | grep org.jenkins.jenkins-swarm$",
         require => Launchd["org.jenkins.jenkins-swarm"],
+      }
+
+      exec { "restart-launchd-service":
+        command     => "launchctl unload ${launchd_path} && sleep 3 && launchctl load ${launchd_path}",
+        refreshonly => true,
+        before      => Exec["enable-launchd-service"],
+        require     => Launchd["org.jenkins.jenkins-swarm"],
+        subscribe   => Util::Script[$script_run],
       }
     }
 
