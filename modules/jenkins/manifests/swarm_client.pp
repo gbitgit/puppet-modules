@@ -124,7 +124,6 @@ class jenkins::swarm_client(
       File[$swarm_dir],
       User[$user],
     ],
-    notify => Service['jenkins-swarm'],
   }
 
   #--------------------------------------------------------------------
@@ -146,9 +145,10 @@ class jenkins::swarm_client(
       }
 
       service { 'jenkins-swarm':
-        ensure   => running,
-        provider => systemd,
-        require  => File["/etc/systemd/system/jenkins-swarm.service"],
+        ensure    => running,
+        provider  => systemd,
+        require   => File["/etc/systemd/system/jenkins-swarm.service"],
+        subscribe => Util::Script[$script_run],
       }
     }
 
@@ -174,6 +174,7 @@ class jenkins::swarm_client(
           stop       => '/sbin/initctl stop jenkins-swarm',
           status     => '/sbin/initctl status jenkins-swarm | grep "/running" 1>/dev/null 2>&1',
           require    => Upstart['jenkins-swarm'],
+          subscribe => Util::Script[$script_run],
         }
       } else {
         # Normal upstart service for Ubuntu
@@ -181,6 +182,7 @@ class jenkins::swarm_client(
           ensure   => running,
           provider => upstart,
           require  => Upstart['jenkins-swarm'],
+          subscribe => Util::Script[$script_run],
         }
       }
     }
@@ -190,9 +192,9 @@ class jenkins::swarm_client(
         content => template('jenkins/swarm_client/launchd.erb'),
       }
 
-      service { 'org.jenkins.jenkins-swarm':
-        ensure  => running,
-        alias   => 'jenkins-swarm',
+      exec { "enable-launchd-sevice":
+        command => "launchctl load /Library/LaunchDaemons/org.jenkins.jenkins-swarm.plist",
+        unless  => "launchctl list | grep org.jenkins.jenkins-swarm$",
         require => Launchd["org.jenkins.jenkins-swarm"],
       }
     }
