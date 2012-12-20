@@ -2,21 +2,23 @@
 #
 # This starts the swarm client.
 
+CLIENT_PATH="<%= @client_path %>"
 FSROOT="<%= @swarm_dir %>"
 HOSTNAME="<%= @hostname %>"
 MASTER="<%= @master_address %>"
-PATH="<%= @client_path %>"
 USER="<%= @user %>"
 
+<% if @sudo_run -%>
 /usr/bin/sudo \
   -u ${USER} \
   -i \
+<% end -%>
   java \
-  -jar ${PATH} \
+  -jar ${CLIENT_PATH} \
   -name ${HOSTNAME} \
   -fsroot ${FSROOT} \
 <% if @labels -%>
-  -labels '<%= @labels %>' \
+  -labels '"<%= @labels %>"' \
 <% end -%>
 <% if @master_user -%>
   -username <%= @master_user %> \

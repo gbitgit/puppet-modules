@@ -16,10 +16,18 @@ class java {
       }
     }
 
+    'Darwin': {
+      # Assume installed from an outside source.
+    }
+
     'Ubuntu': {
       package { ['openjdk-7-jdk', 'openjdk-7-jre-headless']:
         ensure => installed,
       }
+    }
+
+    default: {
+      fail("Unknown operatingsystem to install Java.")
     }
   }
 }

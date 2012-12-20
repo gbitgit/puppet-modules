@@ -9,32 +9,71 @@ class jenkins::swarm_client(
 ) {
   include java
 
-  $user = 'jenkins-swarm'
-  $group = 'jenkins-swarm'
+  if $kernel == 'Darwin' {
+    $user = params_lookup('mac_login_user', 'global')
+    $group = 'wheel'
+    $sudo_run = false
+
+    if $user == '' {
+      fail("mac_login_user must be set.")
+    }
+  } else {
+    $user = 'jenkins-swarm'
+    $group = 'jenkins-swarm'
+    $sudo_run = true
+  }
 
   $client_path = '/usr/local/bin/jenkins-swarm.jar'
   $client_url = 'http://maven.jenkins-ci.org/content/repositories/releases/org/jenkins-ci/plugins/swarm-client/1.7/swarm-client-1.7-jar-with-dependencies.jar'
-  $home_directory = "/home/${user}"
+
+  $home_directory = $operatingsystem ? {
+    'Darwin' => "/Users/${user}",
+    default  => "/home/${user}",
+  }
+
   $swarm_dir = "/var/lib/jenkins-swarm"
   $swarm_log_dir = "/var/log/jenkins-swarm"
 
   $script_run = '/usr/local/bin/jenkins_swarm_run'
 
-  #--------------------------------------------------------------------
-  # User/Group for Jenkins
-  #--------------------------------------------------------------------
+  if $kernel == 'Linux' {
+    #--------------------------------------------------------------------
+    # User/Group for Jenkins
+    #--------------------------------------------------------------------
 
-  group { $group:
-    ensure => present,
-  }
+    group { $group:
+      ensure => present,
+    }
 
-  user { $user:
-    ensure     => present,
-    gid        => $group,
-    home       => $home_directory,
-    shell      => "/bin/bash",
-    managehome => true,
-    require    => Group[$group],
+    user { $user:
+      ensure     => present,
+      gid        => $group,
+      home       => $home_directory,
+      shell      => "/bin/bash",
+      require    => Group[$group],
+    }
+
+    util::recursive_directory { $home_directory: }
+
+    file { $home_directory:
+      ensure  => directory,
+      owner   => $user,
+      group   => $group,
+      mode    => '0755',
+      require => [
+        Group[$group],
+        User[$user],
+        Util::Recursive_directory[$home_directory],
+      ],
+    }
+  } else {
+    group { $group:
+      ensure => present,
+    }
+
+    user { $user:
+      ensure => present,
+    }
   }
 
   #--------------------------------------------------------------------
@@ -143,6 +182,18 @@ class jenkins::swarm_client(
           provider => upstart,
           require  => Upstart['jenkins-swarm'],
         }
+      }
+    }
+
+    'Darwin': {
+      launchd { "org.jenkins.jenkins-swarm":
+        content => template('jenkins/swarm_client/launchd.erb'),
+      }
+
+      service { 'org.jenkins.jenkins-swarm':
+        ensure  => running,
+        alias   => 'jenkins-swarm',
+        require => Launchd["org.jenkins.jenkins-swarm"],
       }
     }
 

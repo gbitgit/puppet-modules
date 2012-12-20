@@ -15,8 +15,8 @@ define sudo::sudoer($content) {
 
   file { "${conf_dir}/${name}":
     content => $real_content,
-    owner   => "root",
-    group   => "root",
+    owner   => $sudo::root_user,
+    group   => $sudo::root_group,
     mode    => "0440",
     require =>  File[$conf_dir],
   }
