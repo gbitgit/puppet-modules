@@ -5,7 +5,6 @@
 class vagrant_installer::package::darwin {
   $file_cache_dir       = hiera("file_cache_dir")
   $install_location     = "/Applications/Vagrant"
-  $pkg_sign_keychain    = hiera("darwin_pkg_keychain")
   $pkg_sign_name        = hiera("darwin_pkg_sign")
   $pkg_staging_dir      = "${file_cache_dir}/pkg-staging"
   $pkg_dist_path        = "${pkg_staging_dir}/vagrant.dist"
@@ -20,9 +19,9 @@ class vagrant_installer::package::darwin {
 
   $final_output_path    = "${dist_dir}/Vagrant.dmg"
 
-  $pkgbuild_options = "--root ${staging_dir} --identifier com.vagrant.vagrant --version ${vagrant_version} --install-location ${install_location} --scripts ${pkg_scripts_dir} --sign '${pkg_sign_name}' --keychain '${pkg_sign_keychain}' --timestamp=none"
+  $pkgbuild_options = "--root ${staging_dir} --identifier com.vagrant.vagrant --version ${vagrant_version} --install-location ${install_location} --scripts ${pkg_scripts_dir} --sign '${pkg_sign_name}' --timestamp=none"
 
-  $productbuild_options = "--distribution ${pkg_dist_path} --resources ${pkg_resources_dir} --package-path ${pkg_staging_dir} --sign '${pkg_sign_name}' --keychain '${pkg_sign_keychain}' --timestamp=none"
+  $productbuild_options = "--distribution ${pkg_dist_path} --resources ${pkg_resources_dir} --package-path ${pkg_staging_dir} --sign '${pkg_sign_name}' --timestamp=none"
 
   # We delete the staging environment every run because every run must
   # generate a new package.
