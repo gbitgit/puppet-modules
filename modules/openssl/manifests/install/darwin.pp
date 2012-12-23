@@ -121,6 +121,6 @@ class openssl::install::darwin {
     command     => "install_name_tool -change ${old_rpath} ${new_rpath} ${final_libssl_path}",
     refreshonly => true,
     require     => Openssl::Install::Darwin_lipo["libssl"],
-    subscribe   => Exec["lipo-libssl-dylib"],
+    subscribe   => Exec["move-dylib-libssl"],
   }
 }
