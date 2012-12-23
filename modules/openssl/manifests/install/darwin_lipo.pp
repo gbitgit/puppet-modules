@@ -45,15 +45,13 @@ define openssl::install::darwin_lipo(
 
   exec { "move-dylib-${lib}":
     command     => "cp ${final_dylib} ${prefix_dylib}",
-    creates     => $prefix_dylib,
     require     => Exec["${lib}-id"],
     subscribe   => Exec["lipo-${lib}-dylib"],
   }
 
   exec { "move-static-${lib}":
-    command   => "cp ${final_static} ${prefix_static}",
-    creates   => $prefix_static,
-    require   => Exec["ranlib-${lib}-static"],
-    subscribe => Exec["lipo-${lib}-static"],
+    command => "cp ${final_static} ${prefix_static}",
+    require     => Exec["ranlib-${lib}-static"],
+    subscribe   => Exec["lipo-${lib}-static"],
   }
 }
