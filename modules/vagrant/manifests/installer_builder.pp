@@ -12,6 +12,7 @@
 class vagrant::installer_builder(
   $file_cache_dir = params_lookup('file_cache_dir', 'global'),
   $install_dir = params_lookup('install_dir'),
+  $local_hiera = undef,
   $revision,
 ) {
   require git
@@ -57,6 +58,15 @@ class vagrant::installer_builder(
       Package["librarian-puppet"],
       Exec["untar-vagrant-installer-builder"],
     ],
+  }
+
+  if $local_hiera {
+    file { "${source_dir_path}/hiera/local.yaml":
+      content => $local_hiera,
+      mode    => "0644",
+      require => Exec["untar-vagrant-installer-builder"],
+      notify  => Exec["rsync-vagrant-installer-builder"],
+    }
   }
 
   exec { "rsync-vagrant-installer-builder":
