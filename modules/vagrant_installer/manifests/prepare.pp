@@ -54,6 +54,7 @@ class vagrant_installer::prepare {
     "${staging_dir}/bin",
     $embedded_dir,
     "${embedded_dir}/bin",
+    "${embedded_dir}/etc",
     "${embedded_dir}/include",
     "${embedded_dir}/lib",
     "${embedded_dir}/share",

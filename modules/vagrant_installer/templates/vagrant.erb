@@ -17,6 +17,7 @@ EMBEDDED_DIR="${DIR}/../embedded"
 # Export gem paths so that we use the isolated gems.
 export GEM_PATH="${EMBEDDED_DIR}/gems"
 export GEM_HOME="${GEM_PATH}"
+export GEMRC="${EMBEDDED_DIR}/etc/gemrc"
 
 # Setup CFLAGS/LDFLAGS so that any gem installs (for plugins) will
 # be able to link against our tools. First, append a space to any
