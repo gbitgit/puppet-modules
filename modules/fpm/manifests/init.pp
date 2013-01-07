@@ -3,7 +3,7 @@
 # Installs FPM, a tool for building packages.
 #
 class fpm(
-  $version = params_lookup('version'),
+  $version = params_lookup('fpm_version', 'global'),
 ) {
   $real_version = $version ? {
     ''      => installed,
