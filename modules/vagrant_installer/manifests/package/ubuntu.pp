@@ -13,7 +13,7 @@ class vagrant_installer::package::ubuntu {
 
   $final_output_path = "${dist_dir}/vagrant_${hardwaremodel}.deb"
 
-  $fpm_args = "-p '${final_output_path}' -n vagrant -v '${vagrant_version}' -s dir -t deb --prefix '${deb_prefix}' --maintainer '${deb_maintainer}'"
+  $fpm_args = "-p '${final_output_path}' -n vagrant -v '${vagrant_version}' -s dir -t deb --prefix '${deb_prefix}' --maintainer '${deb_maintainer}' --deb-user root --deb-group root"
 
   exec { "fpm-vagrant-deb":
     command => "fpm ${fpm_args} .",
