@@ -19,6 +19,10 @@ export GEM_PATH="${EMBEDDED_DIR}/gems"
 export GEM_HOME="${GEM_PATH}"
 export GEMRC="${EMBEDDED_DIR}/etc/gemrc"
 
+# Export an enviromental variable to say we're in a Vagrant
+# installer created environment.
+export VAGRANT_INSTALLER_ENV=1
+
 # Setup CFLAGS/LDFLAGS so that any gem installs (for plugins) will
 # be able to link against our tools. First, append a space to any
 # previously set CFLAGS/LDFLAGS.
