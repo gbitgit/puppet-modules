@@ -10,10 +10,14 @@
 class rubyencoder::loaders(
   $path
 ) {
-  if $kernel != 'windows' {
+  if $kernel == 'Linux' {
     # Make sure the permissions are set properly
     $owner = "root"
     $group = "root"
+    $mode  = "0644"
+  } elsif $kernel == 'Darwin' {
+    $owner = "root"
+    $group = "wheel"
     $mode  = "0644"
   } else {
     $owner = undef
