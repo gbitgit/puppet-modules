@@ -102,6 +102,10 @@ class vagrant_installer::staging::posix {
     ],
   }
 
+  class { "rubyencoder::loaders":
+    path => $embedded_dir,
+  }
+
   class { "vagrant":
     autotools_environment => $default_autotools_environment,
     embedded_dir          => $embedded_dir,
