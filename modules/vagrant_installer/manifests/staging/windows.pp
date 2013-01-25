@@ -14,6 +14,10 @@ class vagrant_installer::staging::windows {
     install_dir => $embedded_dir,
   }
 
+  class { "rubyencoder::loaders":
+    path => $embedded_dir,
+  }
+
   class { "vagrant":
     embedded_dir => $embedded_dir,
     revision     => $vagrant_revision,
