@@ -86,9 +86,10 @@ class bsdtar::posix {
   # On OS X we want to setup the rpath properly for the executable
   if $kernel == 'Darwin' {
     exec { "bsdtar-rpath":
-      command   => "install_name_tool -add_rpath '@executable_path/../lib' ${install_dir}/bin/bsdtar",
-      subscribe => Autotools["libarchive"],
-      require   => Autotools["libarchive"],
+      command     => "install_name_tool -add_rpath '@executable_path/../lib' ${install_dir}/bin/bsdtar",
+      refreshonly => true,
+      subscribe   => Autotools["libarchive"],
+      require     => Autotools["libarchive"],
     }
   }
 }
