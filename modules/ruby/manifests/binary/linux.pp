@@ -15,10 +15,7 @@ class ruby::binary::linux {
       # "--user-install" as the default. Get rid of that.
       file { "/etc/gemrc":
         ensure  => absent,
-        require => [
-          Package["ruby"],
-          Package["rubygems"],
-        ],
+        require => Package["ruby"],
       }
     }
 
