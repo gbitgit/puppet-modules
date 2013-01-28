@@ -11,7 +11,7 @@ class build_essential {
     }
 
     'CentOS': {
-      package { ["gcc", "make"]:
+      package { ["gcc", "make", "automake"]:
         ensure => installed,
       }
     }
