@@ -5,8 +5,9 @@
 class build_essential {
   case $operatingsystem {
     'Archlinux': {
-      package { "base-devel":
-        ensure => installed,
+      exec { "pacman-base-devel":
+        command => "pacman --noconfirm --noprogressbar -Sy base-devel",
+        unless  => "pacman -Qg base-devel",
       }
     }
 
