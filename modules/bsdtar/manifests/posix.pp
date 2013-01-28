@@ -11,9 +11,16 @@ class bsdtar::posix {
 
   if $kernel == 'Darwin' {
     # Make sure we have a later version of automake/autoconf
-    homebrew::package { ["autoconf", "automake"]:
-      link   => true,
-      before => Exec["automake-libarchive"],
+    homebrew::package { "automake":
+      creates => "/usr/local/bin/automake",
+      link    => true,
+      before  => Exec["automake-libarchive"],
+    }
+
+    homebrew::package { "autoconf":
+      creates => "/usr/local/bin/autoconf",
+      link    => true,
+      before  => Exec["automake-libarchive"],
     }
   }
 
