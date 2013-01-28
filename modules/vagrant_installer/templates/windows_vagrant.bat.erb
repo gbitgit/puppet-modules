@@ -12,6 +12,9 @@ REM installer created environment.
 SET "VAGRANT_INSTALLER_ENV=1"
 SET "VAGRANT_INSTALLER_EMBEDDED_DIR=%EMBEDDED_DIR%"
 
+REM Prepend embedded bin to PATH so we prefer those binaries
+SET "PATH=%EMBEDDED_DIR%\bin;%PATH%"
+
 REM Remove RUBYOPT, which causes serious problems.
 SET RUBYOPT=
 
