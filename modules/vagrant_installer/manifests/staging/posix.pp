@@ -46,6 +46,10 @@ class vagrant_installer::staging::posix {
       "LDFLAGS" => "-Wl,-install_name,@rpath/libz.dylib",
     }
   } elsif $kernel == 'Linux' {
+    $bsdtar_autotools_environment =- {
+      "LD_RUN_PATH" => '$ORIGIN/../lib',
+    }
+
     $ruby_autotools_environment = {
       "LD_RUN_PATH" => '\$ORIGIN/../lib',
     }
@@ -89,7 +93,8 @@ class vagrant_installer::staging::posix {
   }
 
   class { "bsdtar":
-    autotools_environment => $default_autotools_environment,
+    autotools_environment => autotools_merge_environments(
+      $default_autotools_environment, $bsdtar_autotools_environment),
     install_dir           => $embedded_dir,
     require               => Class["zlib"],
   }
