@@ -88,6 +88,12 @@ class vagrant_installer::staging::posix {
     make_notify           => Exec["reset-ruby"],
   }
 
+  class { "bsdtar":
+    autotools_environment => $default_autotools_environment,
+    install_dir           => $embedded_dir,
+    require               => Class["zlib"],
+  }
+
   class { "ruby::source":
     autotools_environment => autotools_merge_environments(
       $default_autotools_environment, $ruby_autotools_environment),
