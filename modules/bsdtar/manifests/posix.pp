@@ -7,7 +7,7 @@ class bsdtar::posix {
 
   $source_dir_path = "${file_cache_dir}/libarchive-3.1.1"
   $source_package_path = "${file_cache_dir}/libarchive.tar.gz"
-  $source_url = "https://s3.amazonaws.com/hc-files/libarchive-3.1.1.zip"
+  $source_url = "https://github.com/libarchive/libarchive/archive/v3.1.1.tar.gz"
 
   if $kernel == 'Darwin' {
     # Make sure we have a later version of automake/autoconf
@@ -33,22 +33,23 @@ class bsdtar::posix {
   }
 
   exec { "untar-libarchive":
-    command => "unzip ${source_package_path}",
+    command => "tar xvzf ${source_package_path}",
     creates => $source_dir_path,
     cwd     => $file_cache_dir,
     require => Download["libarchive"],
   }
 
-  exec { "touch configure":
-    command   => "touch configure",
-    before    => Autotools["libarchive"],
-    subscribe => Exec["untar-libarchive"],
-    cwd       => $source_dir_path,
-  }
-
   #------------------------------------------------------------------
   # Compile
   #------------------------------------------------------------------
+  # Create configuration script
+  exec { "automake-libarchive":
+    command => "/bin/sh build/autogen.sh",
+    creates => "${source_dir_path}/configure",
+    cwd     => $source_dir_path,
+    require => Exec["untar-libarchive"],
+  }
+
   # Build it
   autotools { "libarchive":
     configure_flags  => "--prefix=${install_dir} --disable-dependency-tracking",
@@ -56,6 +57,6 @@ class bsdtar::posix {
     environment      => $real_autotools_environment,
     install_sentinel => "${install_dir}/bin/bsdtar",
     make_sentinel    => "${source_dir_path}/bsdtar",
-    require          => Exec["untar-libarchive"],
+    require          => Exec["automake-libarchive"],
   }
 }
