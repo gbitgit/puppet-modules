@@ -1,6 +1,12 @@
 class ruby::binary::linux {
-  package { ["ruby", "rubygems"]:
+  package { "ruby":
     ensure => installed,
+  }
+
+  if $operatingsystem != 'Archlinux' {
+    package { "rubygems":
+      ensure => installed,
+    }
   }
 
   case $operatingsystem {
