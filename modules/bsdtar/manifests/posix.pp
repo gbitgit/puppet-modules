@@ -22,6 +22,11 @@ class bsdtar::posix {
       link    => true,
       before  => Exec["automake-libarchive"],
     }
+
+    homebrew::package { "libtool":
+      creates => "/usr/local/bin/glibtoolize",
+      before  => Exec["automake-libarchive"],
+    }
   }
 
   #------------------------------------------------------------------
