@@ -13,8 +13,8 @@ class bsdtar::posix {
   # based on the operating system.
   if $operatingsystem == 'Darwin' {
     $extra_autotools_environment = {
-      "CFLAGS"  => "-arch i386 -arch x86_64",
-      "LDFLAGS" => "-arch i386 -arch x86_64",
+      "CFLAGS"  => "-arch i386",
+      "LDFLAGS" => "-arch i386",
     }
   } else {
     $extra_autotools_environment = {}
@@ -72,7 +72,7 @@ class bsdtar::posix {
 
   # Build it
   autotools { "libarchive":
-    configure_flags  => "--prefix=${install_dir} --disable-dependency-tracking",
+    configure_flags  => "--prefix=${install_dir} --disable-dependency-tracking --with-zlib --without-bz2lib --without-lzmadec --without-iconv --without-libiconv-prefix --without-lzma --without-nettle --without-openssl --without-xml2 --without-expat --without-libregex",
     cwd              => $source_dir_path,
     environment      => $real_autotools_environment,
     install_sentinel => "${install_dir}/bin/bsdtar",
