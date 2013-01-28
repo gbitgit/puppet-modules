@@ -20,6 +20,7 @@ define homebrew::package(
 
   if $link {
     exec { "brew link ${package}":
+      creates     => $creates,
       environment => "HOME=/Users/${user}",
       subscribe   => Exec["brew install ${package}"],
       user        => $user,
