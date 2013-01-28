@@ -12,8 +12,9 @@ class git {
 
     'Linux': {
       $package = $operatingsystem ? {
-        'CentOS' => "git",
-        default  => "git-core",
+        'Archlinux' => "git",
+        'CentOS'    => "git",
+        default     => "git-core",
       }
 
       package { $package:
