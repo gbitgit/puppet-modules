@@ -9,6 +9,21 @@ class bsdtar::posix {
   $source_package_path = "${file_cache_dir}/libarchive.tar.gz"
   $source_url = "https://github.com/libarchive/libarchive/archive/v3.1.1.tar.gz"
 
+  # Determine if we have an extra environmental variables we need to set
+  # based on the operating system.
+  if $operatingsystem == 'Darwin' {
+    $extra_autotools_environment = {
+      "CFLAGS"  => "-arch i386 -arch x86_64",
+      "LDFLAGS" => "-arch i386 -arch x86_64",
+    }
+  } else {
+    $extra_autotools_environment = {}
+  }
+
+  # Merge our environments.
+  $real_autotools_environment = autotools_merge_environments(
+    $autotools_environment, $extra_autotools_environment)
+
   if $kernel == 'Darwin' {
     # Make sure we have a later version of automake/autoconf
     homebrew::package { "automake":
