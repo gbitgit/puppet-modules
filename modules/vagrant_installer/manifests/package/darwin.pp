@@ -55,6 +55,13 @@ class vagrant_installer::package::darwin {
     require => File[$pkg_resources_dir],
   }
 
+  file { "${pkg_resources_dir}/background_installer.png":
+    source  => "puppet:///modules/vagrant_installer/mac/background_installer.png",
+    mode    => "0644",
+    tag     => "pkg-resource",
+    require => File[$pkg_resources_dir],
+  }
+
   file { "${pkg_resources_dir}/welcome.html":
     source  => "puppet:///modules/vagrant_installer/mac/welcome.html",
     mode    => "0644",
