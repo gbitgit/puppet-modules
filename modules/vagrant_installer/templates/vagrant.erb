@@ -57,6 +57,8 @@ VAGRANT_EXECUTABLE="${EMBEDDED_DIR}/gems/bin/vagrant"
 OS=$(uname -o 2> /dev/null)
 if [ "${OS}" = "Cygwin" ]; then
 	VAGRANT_EXECUTABLE=`cygpath -w "${VAGRANT_EXECUTABLE}"`
+	GEM_HOME=`cygpath -w "${GEM_HOME}"`
+	GEM_PATH=`cygpath -w "${GEM_PATH}"`
 fi
 <% else -%>
 VAGRANT_EXECUTABLE=${GEM_PATH}/bin/vagrant
