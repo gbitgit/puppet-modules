@@ -46,7 +46,7 @@ class vagrant_installer::staging::posix {
       "LDFLAGS" => "-Wl,-install_name,@rpath/libz.dylib",
     }
   } elsif $kernel == 'Linux' {
-    $bsdtar_autotools_environment =- {
+    $bsdtar_autotools_environment = {
       "LD_RUN_PATH" => '$ORIGIN/../lib',
     }
 
