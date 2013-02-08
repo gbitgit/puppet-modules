@@ -4,7 +4,7 @@
 # specifically by making a "/usr/bin/vagrant" and setting up some other
 # paths within the package.
 #
-class vagrant_installer::package::linux_stage {
+class vagrant_installer::package::linux {
   $linux_prefix       = hiera("linux_prefix")
   $file_cache_dir     = $vagrant_installer::params::file_cache_dir
   $script_stage_linux = "${file_cache_dir}/linux_stage"
