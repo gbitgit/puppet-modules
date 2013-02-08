@@ -4,17 +4,15 @@
 #
 class vagrant_installer::package::centos {
   require fpm
+  require vagrant_installer::package::linux
 
-  $centos_prefix   = hiera("rpm_prefix")
   $dist_dir        = $vagrant_installer::params::dist_dir
   $staging_dir     = $vagrant_installer::params::staging_dir
   $vagrant_version = $vagrant_installer::params::vagrant_version
 
   $final_output_path = "${dist_dir}/vagrant_${hardwaremodel}.rpm"
 
-  $fpm_args = "-p '${final_output_path}' -n vagrant -v '${vagrant_version}' -s dir -t rpm --prefix '${centos_prefix}' -C '${staging_dir}'"
-
-  util::recursive_directory { $centos_prefix: }
+  $fpm_args = "-p '${final_output_path}' -n vagrant -v '${vagrant_version}' -s dir -t rpm --prefix '/' -C '${staging_dir}'"
 
   package { "rpm-build":
     ensure => installed,
@@ -24,9 +22,6 @@ class vagrant_installer::package::centos {
     command => "fpm ${fpm_args} .",
     cwd     => $staging_dir,
     creates => $final_output_path,
-    require => [
-      Package["rpm-build"],
-      Util::Recursive_directory[$centos_prefix],
-    ],
+    require => Package["rpm-build"],
   }
 }
