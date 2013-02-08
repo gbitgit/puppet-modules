@@ -37,7 +37,7 @@ class ruby::binary::linux {
 
     'CentOS': {
       package { "ruby-devel":
-        ensure => installed,
+        ensure => latest,
       }
     }
 
