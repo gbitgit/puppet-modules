@@ -12,8 +12,23 @@ class build_essential {
     }
 
     'CentOS': {
-      package { ["gcc", "make", "automake", "libtool"]:
+      package { ["gcc", "make"]:
         ensure => installed,
+      }
+
+      $script_build_autotools = "/usr/local/bin/centos_build_autotools"
+
+      util::script { $script_build_autotools:
+        content => template("build_essential/centos_build_autotools.sh.erb"),
+      }
+
+      exec { $script_build_autotools:
+        unless  => "test -f /usr/local/bin/m4",
+        require => [
+          Package["gcc"],
+          Package["make"],
+          Util::Script[$script_build_autotools],
+        ],
       }
     }
 
