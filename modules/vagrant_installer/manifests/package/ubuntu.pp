@@ -26,7 +26,7 @@ class vagrant_installer::package::ubuntu {
   $script_stage_linux = "${file_cache_dir}/linux_stage"
 
   util::script { $script_stage_linux:
-    content => template("vagrant_installer/linux_stage.sh.erb"),
+    content => template("vagrant_installer/package/linux_stage.sh.erb"),
   }
 
   exec { $script_stage_linux:
